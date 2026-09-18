@@ -1,0 +1,71 @@
+# Publishes to GitHub Pages using GitHub's official pipeline.
+#
+# WHY THIS EXISTS ALONGSIDE deploy.yml:
+# deploy.yml pushes the built site to a gh-pages branch. On some repositories
+# that push automatically creates the Pages site; on this one it did not —
+# the deploy job succeeded and the branch exists, but Pages stayed disabled
+# (has_pages: false), so every URL returned 404.
+#
+# `actions/configure-pages` with `enablement: true` asks GitHub to create the
+# Pages site using the workflow token, which can enable Pages without anyone
+# opening repository settings.
+#
+# This is deliberately a SEPARATE workflow, and it uses its own concurrency
+# group so it cannot cancel deploy.yml. If the enablement step is not permitted
+# here, this workflow fails on its own and the gh-pages branch published by
+# deploy.yml remains intact and ready — Pages can then be switched on manually
+# under Settings -> Pages -> Source: gh-pages / root.
+name: Publish to GitHub Pages (official pipeline)
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages-official
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Must run before the build so a failure here is obvious in the log
+      # rather than surfacing as a mysterious missing deployment.
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # Builds with the /aurigavision/ base path, matching the project
+      # sub-path the site is served from.
+      - run: npm run build:gh
+
+      - run: touch dist/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
