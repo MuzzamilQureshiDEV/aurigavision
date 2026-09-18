@@ -1,4 +1,4 @@
-import { brand, footer, navLinks } from '../data/content';
+import { brand, footer, navLinks, ui } from '../data/content';
 import Logo from './ui/Logo';
 import { Icon } from './ui/Icons';
 
@@ -30,8 +30,8 @@ export default function Footer() {
             </ul>
           </div>
 
-          <nav aria-label="Footer Navigation" className="lg:col-span-3">
-            <h2 className="text-xs font-bold uppercase tracking-[0.18em] text-gold-300">Navigation</h2>
+          <nav aria-label={ui.nav.footer} className="lg:col-span-3">
+            <h2 className="text-xs font-bold uppercase tracking-[0.18em] text-gold-300">{ui.footer.navHeading}</h2>
             <ul className="mt-4 space-y-2.5">
               {navLinks.map((link) => (
                 <li key={link.href}>
@@ -47,7 +47,7 @@ export default function Footer() {
           </nav>
 
           <div className="lg:col-span-4">
-            <h2 className="text-xs font-bold uppercase tracking-[0.18em] text-gold-300">Kontakt</h2>
+            <h2 className="text-xs font-bold uppercase tracking-[0.18em] text-gold-300">{ui.footer.contactHeading}</h2>
             <address className="mt-4 not-italic">
               <p className="text-sm font-semibold text-white">{brand.legalName}</p>
               <p className="mt-1 text-sm leading-relaxed text-navy-200">

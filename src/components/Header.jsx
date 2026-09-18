@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { brand, navLinks } from '../data/content';
+import { brand, hero, navLinks, ui } from '../data/content';
 import Logo from './ui/Logo';
 import { Icon } from './ui/Icons';
 
@@ -98,12 +98,12 @@ export default function Header({ onSelectAudience }) {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             className="rounded-xl"
-            aria-label={`${brand.legalName} — zum Seitenanfang`}
+            aria-label={`${brand.legalName} — ${ui.backToTop}`}
           >
             <Logo />
           </a>
 
-          <nav aria-label="Hauptnavigation" className="hidden lg:block">
+          <nav aria-label={ui.nav.primary} className="hidden lg:block">
             <ul className="flex items-center gap-1">
               {navLinks.map((link) => {
                 const id = link.href.slice(1);
@@ -141,12 +141,12 @@ export default function Header({ onSelectAudience }) {
               href="#contact"
               onClick={(e) => {
                 e.preventDefault();
-                onSelectAudience?.('unternehmen');
+                onSelectAudience?.(hero.primaryCta.audience);
                 go('#contact');
               }}
               className="btn-primary"
             >
-              Kontakt aufnehmen
+              {ui.nav.headerCta}
               <Icon name="arrowRight" className="h-4 w-4" strokeWidth={2} />
             </a>
           </div>
@@ -157,7 +157,7 @@ export default function Header({ onSelectAudience }) {
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
             aria-controls="mobile-menu"
-            aria-label={open ? 'Menü schliessen' : 'Menü öffnen'}
+            aria-label={open ? ui.nav.closeMenu : ui.nav.openMenu}
             className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-navy-200 text-navy-800 transition hover:border-navy-400 lg:hidden"
           >
             <Icon name={open ? 'close' : 'menu'} className="h-5 w-5" strokeWidth={1.8} />
@@ -177,7 +177,7 @@ export default function Header({ onSelectAudience }) {
           >
             <button
               type="button"
-              aria-label="Menü schliessen"
+              aria-label={ui.nav.closeMenu}
               onClick={() => setOpen(false)}
               className="absolute inset-0 h-full w-full cursor-default bg-navy-900/45"
             />
@@ -191,7 +191,7 @@ export default function Header({ onSelectAudience }) {
               transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
               className="absolute inset-x-0 top-0 max-h-[100dvh] overflow-y-auto border-b border-navy-100 bg-white px-5 pb-8 pt-[4.5rem] shadow-lift"
             >
-              <nav aria-label="Mobile Navigation">
+              <nav aria-label={ui.nav.mobile}>
                 <ul className="mt-4 flex flex-col gap-1">
                   {navLinks.map((link) => (
                     <li key={link.href}>
@@ -211,28 +211,29 @@ export default function Header({ onSelectAudience }) {
                 </ul>
               </nav>
 
+              {/* Same two audience routes as the hero, sharing their labels. */}
               <div className="mt-6 flex flex-col gap-3">
                 <a
-                  href="#contact"
+                  href={hero.primaryCta.href}
                   onClick={(e) => {
                     e.preventDefault();
-                    onSelectAudience?.('unternehmen');
-                    go('#contact');
+                    onSelectAudience?.(hero.primaryCta.audience);
+                    go(hero.primaryCta.href);
                   }}
                   className="btn-primary w-full"
                 >
-                  Als Unternehmen zusammenarbeiten
+                  {hero.primaryCta.label}
                 </a>
                 <a
-                  href="#contact"
+                  href={hero.secondaryCta.href}
                   onClick={(e) => {
                     e.preventDefault();
-                    onSelectAudience?.('kandidat');
-                    go('#contact');
+                    onSelectAudience?.(hero.secondaryCta.audience);
+                    go(hero.secondaryCta.href);
                   }}
                   className="btn-outline w-full"
                 >
-                  Als Kandidat:in bewerben
+                  {hero.secondaryCta.label}
                 </a>
               </div>
 

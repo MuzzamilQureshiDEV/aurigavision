@@ -21,6 +21,16 @@ export default function Testimonials() {
                 <blockquote className="mt-4 font-display text-lg font-semibold leading-snug text-navy-800">
                   {item.quote}
                 </blockquote>
+
+                {/* Quotes originally given in German keep their exact wording
+                    beneath the English rendering, rather than only appearing
+                    as a translation. lang="de" so screen readers switch voice. */}
+                {item.original && (
+                  <p lang="de" className="mt-3 text-sm italic leading-relaxed text-ink-muted">
+                    “{item.original}”
+                  </p>
+                )}
+
                 <figcaption className="mt-auto flex items-center gap-3 pt-6">
                   <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-navy-800 font-display text-sm font-bold text-gold-300">
                     {initialsOf(item.name)}

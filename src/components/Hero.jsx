@@ -52,6 +52,8 @@ export default function Hero({ onSelectAudience }) {
             {hero.badge}
           </motion.p>
 
+          {/* Title arrives from content.js in two parts so the second half can
+              carry the gold gradient without stranding copy in this component. */}
           <motion.h1
             id="hero-heading"
             initial={{ opacity: 0, y: 24 }}
@@ -59,8 +61,8 @@ export default function Hero({ onSelectAudience }) {
             transition={{ duration: 0.75, delay: 0.08, ease: EASE }}
             className="h1 mt-6 text-white"
           >
-            Professioneller Partner für{' '}
-            <span className="text-gradient-gold">Recruitment &amp; Executive Search</span>
+            {hero.title.lead}{' '}
+            <span className="text-gradient-gold">{hero.title.highlight}</span>
           </motion.h1>
 
           <motion.p

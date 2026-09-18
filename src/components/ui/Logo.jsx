@@ -1,4 +1,4 @@
-import { brand } from '../../data/content';
+import { brand, ui } from '../../data/content';
 
 /**
  * Wordmark + constellation mark.
@@ -17,7 +17,7 @@ export default function Logo({ variant = 'dark', className = '' }) {
         viewBox="0 0 40 40"
         className="h-9 w-9 shrink-0"
         role="img"
-        aria-label={`${brand.legalName} Logo`}
+        aria-label={`${brand.legalName} logo`}
       >
         <rect
           width="40"
@@ -57,7 +57,7 @@ export default function Logo({ variant = 'dark', className = '' }) {
             isLight ? 'text-navy-200' : 'text-ink-muted'
           }`}
         >
-          Healthcare Talent
+          {ui.logoTagline}
         </span>
       </span>
     </span>

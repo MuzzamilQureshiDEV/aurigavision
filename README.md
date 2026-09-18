@@ -24,9 +24,12 @@ Node 20 or newer.
 
 **All copy lives in one file: [`src/data/content.js`](src/data/content.js).**
 
-No component contains hard-coded text. To change a headline, a service, a
-statistic, the address, or the navigation, edit that file — nothing else needs
-to be touched. Each section of the file matches a section of the page:
+No component contains hard-coded text — page copy sits in the section objects,
+and interface strings (buttons, aria-labels, form validation and status
+messages) sit in the `ui` object at the bottom of the same file. To change a
+headline, a service, a statistic, the address, or the navigation, edit that
+file — nothing else needs to be touched. Each section of the file matches a
+section of the page:
 
 | Object in `content.js` | Section on the page |
 | --- | --- |
@@ -40,6 +43,7 @@ to be touched. Each section of the file matches a section of the page:
 | `testimonials` | Client quotes |
 | `contact` | Contact section and form labels |
 | `footer` | Footer text and legal links |
+| `ui` | Buttons, aria-labels, form errors and status messages |
 
 ---
 
@@ -47,9 +51,11 @@ to be touched. Each section of the file matches a section of the page:
 
 These are the open items, all marked with `CLIENT:` comments in the code.
 
-1. **Language.** The copy here is German, as briefed. The current live site at
-   aurigavision.ch is in English. If English is the standard now, translating
-   `content.js` alone switches the whole site over.
+1. **Language.** The site is in English, matching the live site at
+   aurigavision.ch. Translating `content.js` alone switches the whole site to
+   another language. The one deliberate exception is the Sabine Maurer
+   testimonial, which was given in German and is shown in its original wording
+   (tagged `lang="de"`) beneath the English rendering.
 2. **Telephone number.** No public number was listed on the website, so
    `brand.phone` is deliberately empty and the phone row does not render. Fill
    it in and it appears automatically in the contact panel and footer.

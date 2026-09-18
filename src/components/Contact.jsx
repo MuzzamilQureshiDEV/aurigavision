@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { brand, contact } from '../data/content';
+import { brand, contact, ui } from '../data/content';
 import Reveal from './ui/Reveal';
 import { Icon } from './ui/Icons';
 
@@ -22,7 +22,7 @@ const FORM_ENDPOINT = ''; // CLIENT: paste your form endpoint URL here.
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-const emptyForm = { name: '', email: '', company: '', message: '', audience: 'unternehmen' };
+const emptyForm = { name: '', email: '', company: '', message: '', audience: 'company' };
 
 export default function Contact({ audience, onSelectAudience }) {
   const [values, setValues] = useState(emptyForm);
@@ -44,11 +44,12 @@ export default function Contact({ audience, onSelectAudience }) {
   };
 
   const validate = () => {
+    const messages = contact.form.errors;
     const next = {};
-    if (!values.name.trim()) next.name = 'Bitte geben Sie Ihren Namen an.';
-    if (!values.email.trim()) next.email = 'Bitte geben Sie Ihre E-Mail-Adresse an.';
-    else if (!EMAIL_RE.test(values.email.trim())) next.email = 'Diese E-Mail-Adresse scheint nicht gültig zu sein.';
-    if (values.message.trim().length < 10) next.message = 'Bitte beschreiben Sie Ihr Anliegen in mindestens 10 Zeichen.';
+    if (!values.name.trim()) next.name = messages.name;
+    if (!values.email.trim()) next.email = messages.emailRequired;
+    else if (!EMAIL_RE.test(values.email.trim())) next.email = messages.emailInvalid;
+    if (values.message.trim().length < 10) next.message = messages.message;
     return next;
   };
 
@@ -68,12 +69,12 @@ export default function Contact({ audience, onSelectAudience }) {
       contact.form.audienceOptions.find((o) => o.value === values.audience)?.label ?? values.audience;
 
     if (!FORM_ENDPOINT) {
-      const subject = `Anfrage über die Website — ${audienceLabel}: ${values.name}`;
+      const subject = `Website enquiry — ${audienceLabel}: ${values.name}`;
       const body = [
-        `Ich bin: ${audienceLabel}`,
+        `I am: ${audienceLabel}`,
         `Name: ${values.name}`,
-        `E-Mail: ${values.email}`,
-        values.company ? `Unternehmen: ${values.company}` : null,
+        `Email: ${values.email}`,
+        values.company ? `Company: ${values.company}` : null,
         '',
         values.message,
       ]
@@ -109,9 +110,9 @@ export default function Contact({ audience, onSelectAudience }) {
     return undefined;
   };
 
+  // overflow-hidden clips the info panel's slide-in from the right, which
+  // would otherwise widen the document while the animation runs.
   return (
-    // overflow-hidden clips the info panel's slide-in from the right, which
-    // would otherwise widen the document while the animation runs.
     <section
       id="contact"
       aria-labelledby="contact-heading"
@@ -210,7 +211,7 @@ export default function Contact({ audience, onSelectAudience }) {
                 <div className="sm:col-span-2">
                   <Field
                     id="company"
-                    label={`${contact.form.fields.company.label} (optional)`}
+                    label={`${contact.form.fields.company.label} (${ui.optional})`}
                     placeholder={contact.form.fields.company.placeholder}
                     value={values.company}
                     onChange={setField('company')}
@@ -265,24 +266,23 @@ export default function Contact({ audience, onSelectAudience }) {
                           : 'border-gold-400/40 bg-gold-100 text-navy-700'
                       }`}
                     >
-                      {status === 'sent' && 'Vielen Dank — Ihre Nachricht ist bei uns eingegangen. Wir melden uns zeitnah zurück.'}
+                      {status === 'sent' && ui.status.sent}
                       {status === 'mailto' && (
                         <>
-                          Ihr E-Mail-Programm wurde mit der fertigen Nachricht geöffnet. Falls sich nichts
-                          getan hat, schreiben Sie uns direkt an{' '}
+                          {ui.status.mailtoBefore}{' '}
                           <a href={`mailto:${brand.email}`} className="font-semibold underline">
                             {brand.email}
                           </a>
-                          .
+                          {ui.status.mailtoAfter}
                         </>
                       )}
                       {status === 'error' && (
                         <>
-                          Das Senden hat leider nicht geklappt. Bitte schreiben Sie uns direkt an{' '}
+                          {ui.status.errorBefore}{' '}
                           <a href={`mailto:${brand.email}`} className="font-semibold underline">
                             {brand.email}
                           </a>
-                          .
+                          {ui.status.errorAfter}
                         </>
                       )}
                     </motion.p>
@@ -302,7 +302,9 @@ export default function Contact({ audience, onSelectAudience }) {
                   <a href={`mailto:${brand.email}`} className="group flex items-start gap-3">
                     <Icon name="mail" className="mt-0.5 h-5 w-5 shrink-0 text-gold-300" />
                     <span>
-                      <span className="block text-xs font-bold uppercase tracking-[0.14em] text-navy-200">E-Mail</span>
+                      <span className="block text-xs font-bold uppercase tracking-[0.14em] text-navy-200">
+                        {ui.contactPanel.email}
+                      </span>
                       <span className="mt-0.5 block text-sm font-medium text-white group-hover:text-gold-200">
                         {brand.email}
                       </span>
@@ -316,7 +318,9 @@ export default function Contact({ audience, onSelectAudience }) {
                     <a href={`tel:${brand.phone.replace(/\s/g, '')}`} className="group flex items-start gap-3">
                       <Icon name="phone" className="mt-0.5 h-5 w-5 shrink-0 text-gold-300" />
                       <span>
-                        <span className="block text-xs font-bold uppercase tracking-[0.14em] text-navy-200">Telefon</span>
+                        <span className="block text-xs font-bold uppercase tracking-[0.14em] text-navy-200">
+                          {ui.contactPanel.phone}
+                        </span>
                         <span className="mt-0.5 block text-sm font-medium text-white group-hover:text-gold-200">
                           {brand.phone}
                         </span>
@@ -334,7 +338,9 @@ export default function Contact({ audience, onSelectAudience }) {
                   >
                     <Icon name="pin" className="mt-0.5 h-5 w-5 shrink-0 text-gold-300" />
                     <span>
-                      <span className="block text-xs font-bold uppercase tracking-[0.14em] text-navy-200">Standort</span>
+                      <span className="block text-xs font-bold uppercase tracking-[0.14em] text-navy-200">
+                        {ui.contactPanel.location}
+                      </span>
                       <span className="mt-0.5 block text-sm font-medium leading-relaxed text-white group-hover:text-gold-200">
                         {brand.address.street}
                         <br />
@@ -346,7 +352,9 @@ export default function Contact({ audience, onSelectAudience }) {
               </ul>
 
               <div className="mt-8 border-t border-white/15 pt-6">
-                <p className="text-xs font-bold uppercase tracking-[0.14em] text-navy-200">Folgen Sie uns</p>
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-navy-200">
+                  {ui.contactPanel.followUs}
+                </p>
                 <ul className="mt-3 flex gap-3">
                   {brand.socials.map((social) => (
                     <li key={social.label}>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { ui } from './data/content';
 import ScrollProgress from './components/ScrollProgress';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -16,7 +17,7 @@ export default function App() {
    * hero, header, mobile drawer — can preselect the right option in the contact
    * form before scrolling to it, instead of making the visitor choose twice.
    */
-  const [audience, setAudience] = useState('unternehmen');
+  const [audience, setAudience] = useState('company');
 
   return (
     <>
@@ -27,7 +28,7 @@ export default function App() {
         href="#main"
         className="sr-only-focusable fixed left-4 top-4 z-[70] rounded-full bg-navy-800 px-5 py-3 text-sm font-semibold text-white shadow-lift"
       >
-        Zum Inhalt springen
+        {ui.skipToContent}
       </a>
 
       <Header onSelectAudience={setAudience} />
